@@ -41,6 +41,16 @@ class Ad(models.Model):
         null=True,
     ),
 
+    def __str__(self):
+        # Строковое отображение объекта
+        return (
+            f"Товар {self.title}, стоимость {self.price}"
+        )
+
+    class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
+
 
 class Review(models.Model):
     text = models.CharField(
@@ -73,3 +83,13 @@ class Review(models.Model):
         blank=True,
         null=True,
     ),
+
+    def __str__(self):
+        # Строковое отображение объекта
+        return (
+            f"Отзыв {self.author} к {self.ad}:  {self.text}. {self.created_at}"
+        )
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
