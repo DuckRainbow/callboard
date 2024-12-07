@@ -24,6 +24,13 @@ class User(AbstractUser):
         verbose_name='электронная почта пользователя'
     )
 
+    token = models.CharField(
+        max_length=100,
+        verbose_name='Token',
+        blank=True,
+        null=True,
+    )
+
     phone_num = models.CharField(
         max_length=12,
         verbose_name='телефон для связи',
