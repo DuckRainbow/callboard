@@ -50,9 +50,10 @@ class Ad(models.Model):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
+        ordering = ('-created_at',)
 
 
-class Review(models.Model):
+class Feedback(models.Model):
     text = models.CharField(
         max_length=50,
         verbose_name='Текст отзыва',
@@ -93,3 +94,4 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
+

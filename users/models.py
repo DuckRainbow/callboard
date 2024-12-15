@@ -1,5 +1,12 @@
+import secrets
+
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+
+from config.settings import EMAIL_HOST_USER
 
 
 class User(AbstractUser):
@@ -61,3 +68,15 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def reset_password(self, request, *args, **kwargs):
+        new_password = secrets.token_hex(8)
+        self.set_password(new_password)
+        self.save()
+        send_mail(
+            subject='Изменение пароля',
+            message=f'Твой новый пароль: {new_password}',
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[self.email],
+        )
+        return redirect(reverse('users:login'))
