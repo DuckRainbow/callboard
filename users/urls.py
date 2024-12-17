@@ -1,16 +1,25 @@
-from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+from rest_framework.permissions import AllowAny
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+
 from users.apps import UsersConfig
-from users.views import UserCreateView, email_verification, ResetPassword, UserUpdateView, UserDetailView
+from users.views import (
+    CustomTokenObtainPairView,
+    PasswordResetRequestView,
+    PasswordResetView,
+)
+from users.views import UserCreateAPIView
 
 app_name = UsersConfig.name
 
+router = DefaultRouter()
+
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('register/', UserCreateView.as_view(), name='register'),
-    path('email-confirm/<str:token>/', email_verification, name='email-confirm'),
-    path('reset_password', ResetPassword.as_view(), name='reset_password'),
-    path('user_update/', UserUpdateView.as_view(template_name='profile_form.html'), name='user_update'),
-    path('login/profile/', UserDetailView.as_view(template_name='profile.html'), name='profile'),
+    path('register/', UserCreateAPIView.as_view(permission_classes=(AllowAny,)), name='register',),
+    path('login/', CustomTokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='login',),
+    path('token/refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh',),
+    path('token/verify/', TokenVerifyView.as_view(permission_classes=(AllowAny,)), name='token_verify',),
+    path('reset_password/', PasswordResetRequestView.as_view(), name='password_reset'),
+    path('reset_password_confirm/<str:uid>/<str:token>/', PasswordResetView.as_view(), name='reset_password_confirm',),
 ]
