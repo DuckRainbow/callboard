@@ -53,6 +53,7 @@ class User(AbstractUser):
     role = models.CharField(
         choices=ROLE_CHOICES,
         default='user',
+        max_length=25,
     )
 
     image = models.ImageField(

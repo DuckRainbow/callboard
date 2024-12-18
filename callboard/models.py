@@ -39,7 +39,7 @@ class Ad(models.Model):
         verbose_name='Дата создания объявления',
         blank=True,
         null=True,
-    ),
+    )
 
     def __str__(self):
         # Строковое отображение объекта
