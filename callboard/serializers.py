@@ -6,7 +6,7 @@ from callboard.models import Ad, Feedback
 class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ad
-        fields = '__all__'
+        fields = ('title', 'price', 'description', 'author')
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

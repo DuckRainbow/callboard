@@ -23,7 +23,7 @@ app_name = CallboardConfig.name
 router = DefaultRouter()
 
 urlpatterns = [
-                  path('list/', AdListAPIView.as_view(), name='ad_list'),
+                  path('', AdListAPIView.as_view(), name='ad_list'),
                   path('create/', AdCreateAPIView.as_view(), name='ad_create'),
                   path('my_ads/', UsersAdListAPIView.as_view(), name='ad_mylist'),
                   path('<int:pk>/', AdRetrieveAPIView.as_view(), name='ad_retrieve'),

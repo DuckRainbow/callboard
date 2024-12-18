@@ -21,7 +21,6 @@ class AdCreateAPIView(CreateAPIView):
         """Привязка автора объявления к текущему пользователю"""
         ad = serializer.save()
         ad.author = self.request.user
-        print(ad.author)
         ad.save()
 
 
@@ -79,8 +78,8 @@ class UsersAdListAPIView(ListAPIView):
 
     def get_queryset(self):
         """Список объявлений автора"""
-        user = self.request.user
-        return super().get_queryset().filter(author=user)
+        author = self.request.user
+        return Ad.objects.filter(author=author)
 
 
 class FeedbackCreateAPIView(CreateAPIView):
@@ -163,4 +162,4 @@ class UsersFeedbackListAPIView(ListAPIView):
     def get_queryset(self):
         """Метод для получения списка отзывов пользователя"""
         author = self.request.user
-        return super().get_queryset().filter(author=author)
+        return Feedback.objects.filter(author=author)
