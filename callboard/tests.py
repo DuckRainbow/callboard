@@ -47,6 +47,7 @@ class AdTestCase(APITestCase):
             'previous': None,
             'results': [
                 {
+                    'id': self.ad.pk,
                     'title': self.ad.title,
                     'price': self.ad.price,
                     'description': self.ad.description,
@@ -127,27 +128,27 @@ class FeedbackTestCase(APITestCase):
         self.assertEqual(Feedback.objects.count(), 2)
         self.assertTrue(author, feedback.author)
 
-    # def test_feedback_list(self):
-    #     """Вывод списка отзывов на объявление"""
-    #     url = f'/callboard/{self.ad.pk}/feedbacks/'
-    #     response = self.client.get(url)
-    #     data = response.json()
-    #     result = {
-    #         'count': 1,
-    #         'next': None,
-    #         'previous': None,
-    #         'results': [
-    #             {
-    #                 'id': self.feedback.pk,
-    #                 'text': self.feedback.text,
-    #                 'author': self.feedback.author.id,
-    #                 'ad': self.feedback.ad,
-    #             }
-    #         ],
-    #     }
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(Feedback.objects.count(), 1)
-    #     self.assertEqual(data, result)
+    def test_feedback_list(self):
+        """Вывод списка отзывов на объявление"""
+        url = f'/callboard/{self.ad.pk}/feedbacks/'
+        response = self.client.get(url)
+        data = response.json()
+        result = {
+            'count': 1,
+            'next': None,
+            'previous': None,
+            'results': [
+                {
+                    'id': self.feedback.pk,
+                    'author': self.feedback.author.id,
+                    'ad': self.feedback.ad.id,
+                    'text': self.feedback.text,
+                }
+            ],
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Feedback.objects.count(), 1)
+        self.assertEqual(data, result)
 
     def test_feedback_retrieve(self):
         """Проверка корректности данных"""
@@ -156,23 +157,22 @@ class FeedbackTestCase(APITestCase):
         data = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data['text'], self.feedback.text)
-        print(data)
         self.assertEqual(data['author'], self.feedback.author.id)
-        self.assertEqual(data['ad'], self.feedback.ad)
+        self.assertEqual(data['ad'], self.feedback.ad.id)
 
-    # def test_feedback_update(self):
-    #     """Проверка обновления отзыва"""
-    #     url = f'/callboard/feedbacks/{self.feedback.pk}/update/'
-    #     data = {
-    #         'text': 'Отзыв объявления №1 обновлен',
-    #     }
-    #     response = self.client.patch(url, data, format='json')
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(data['text'], self.feedback.text)
-    #
-    # def test_feedback_delete(self):
-    #     """Проверка удаления отзыва"""
-    #     url = f'/callboard/feedbacks/{self.feedback.pk}/delete/'
-    #     response = self.client.delete(url)
-    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertEqual(Ad.objects.count(), 1)
+    def test_feedback_update(self):
+        """Проверка обновления отзыва"""
+        url = f'/callboard/feedbacks/{self.feedback.pk}/update/'
+        data = {
+            'text': 'Отзыв объявления №2 обновлен',
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data['text'], response.json()['text'])
+
+    def test_feedback_delete(self):
+        """Проверка удаления отзыва"""
+        url = f'/callboard/feedbacks/{self.feedback.pk}/delete/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Ad.objects.count(), 1)

@@ -6,13 +6,13 @@ from callboard.models import Ad, Feedback
 class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ad
-        fields = ('title', 'price', 'description', 'author')
+        fields = ('id', 'title', 'price', 'description', 'author')
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ('text',)
+        fields = ('id', 'author', 'ad', 'text')
 
 
 class AdDetailSerializer(serializers.ModelSerializer):
@@ -20,4 +20,4 @@ class AdDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = '__all__'
+        fields = ('id', 'author', 'ad', 'text')

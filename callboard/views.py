@@ -103,7 +103,7 @@ class FeedbackListAPIView(ListAPIView):
     """Контроллер для просмотра всех отзывов объявления"""
 
     queryset = Feedback.objects.all()
-    serializer_class = AdDetailSerializer
+    serializer_class = FeedbackSerializer
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
 
