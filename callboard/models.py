@@ -10,32 +10,29 @@ class Ad(models.Model):
         blank=True,
         null=True,
         help_text='Введите название товара',
-    ),
-
+    )
     price = models.IntegerField(
         verbose_name='Стоимость',
         blank=True,
         null=True,
         help_text='Введите стоимость товара',
-    ),
-
+    )
     description = models.CharField(
         max_length=50,
         verbose_name='Описание',
         blank=True,
         null=True,
         help_text='Опишите товар',
-    ),
-
+    )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-    ),
-
+    )
     created_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name='Дата создания объявления',
         blank=True,
         null=True,
@@ -61,29 +58,28 @@ class Feedback(models.Model):
         null=True,
         help_text='Введите текст отзыва',
 
-    ),
-
+    )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-    ),
-
+    )
     ad = models.ForeignKey(
-        User,
+        Ad,
+        related_name='feedback_ad',
         verbose_name='Объявление',
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-    ),
-
+    )
     created_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name='Дата создания объявления',
         blank=True,
         null=True,
-    ),
+    )
 
     def __str__(self):
         # Строковое отображение объекта
@@ -94,4 +90,3 @@ class Feedback(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
-

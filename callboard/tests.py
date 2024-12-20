@@ -1,10 +1,8 @@
-from datetime import datetime
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from callboard.models import Ad, Feedback
+from callboard.models import (Ad, Feedback)
 from users.models import User
 
 
@@ -21,8 +19,7 @@ class AdTestCase(APITestCase):
             title='Тестовое объявление №1',
             price=500,
             description='Тестовое описание объявления №1',
-            author=self.user,
-            created_at='2024-12-18T13:00:00Z',
+            author=self.user
         )
 
     def test_create_ad(self):
@@ -32,8 +29,7 @@ class AdTestCase(APITestCase):
             'title': 'Тестовое объявление №2',
             'price': 600,
             'description': 'Тестовое описание объявления №2',
-            'author': self.user.pk,
-            'created_at' : '2024-12-18T13:00:00Z',
+            'author': self.user.pk
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -52,11 +48,10 @@ class AdTestCase(APITestCase):
             'results': [
                 {
                     'id': self.ad.pk,
-                    'title': 'Тестовое объявление №1',
-                    'price': 500,
-                    'description': 'Тестовое описание объявления №1',
-                    'created_at': datetime.isoformat(self.ad.created_at),
-                    'author': self.user.pk,
+                    'title': self.ad.title,
+                    'price': self.ad.price,
+                    'description': self.ad.description,
+                    'author': self.ad.author.id,
                 }
             ],
         }
@@ -72,8 +67,7 @@ class AdTestCase(APITestCase):
         self.assertEqual(data['title'], self.ad.title)
         self.assertEqual(data['price'], self.ad.price)
         self.assertEqual(data['description'], self.ad.description)
-        self.assertEqual(data['created_at'], datetime.isoformat(self.ad.created_at))
-        self.assertEqual(data['author'], self.user.pk)
+        self.assertEqual(data['author'], self.ad.author.id)
 
     def test_ad_update(self):
         """Проверка обновления объявления"""
@@ -123,7 +117,7 @@ class FeedbackTestCase(APITestCase):
         url = f'/callboard/{self.ad.pk}/feedbacks/create/'
         data = {
             'text': 'Новый отзыв на тестовое объявление №1',
-            'author': self.user.pk,
+            'author': self.feedback.author.id,
             'ad': self.ad.pk,
             'created_at': '2024-12-17T16:00:00Z',
         }
@@ -146,10 +140,9 @@ class FeedbackTestCase(APITestCase):
             'results': [
                 {
                     'id': self.feedback.pk,
-                    'text': 'Отзыв на тестовое объявление №1',
-                    'created_at': datetime.isoformat(self.feedback.created_at),
-                    'author': self.user.pk,
-                    'ad': self.ad.pk,
+                    'author': self.feedback.author.id,
+                    'ad': self.feedback.ad.id,
+                    'text': self.feedback.text,
                 }
             ],
         }
@@ -164,21 +157,18 @@ class FeedbackTestCase(APITestCase):
         data = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data['text'], self.feedback.text)
-        self.assertEqual(data['author'], self.user.pk)
-        self.assertEqual(data['ad'], self.ad.pk)
-        self.assertEqual(
-            data['created_at'], datetime.isoformat(self.feedback.created_at)
-        )
+        self.assertEqual(data['author'], self.feedback.author.id)
+        self.assertEqual(data['ad'], self.feedback.ad.id)
 
     def test_feedback_update(self):
         """Проверка обновления отзыва"""
         url = f'/callboard/feedbacks/{self.feedback.pk}/update/'
         data = {
-            'text': 'Отзыв объявления №1 обновлен',
+            'text': 'Отзыв объявления №2 обновлен',
         }
-        response = self.client.patch(url, data, format='json')
+        response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data['text'], 'Отзыв объявления №1 обновлен')
+        self.assertEqual(data['text'], response.json()['text'])
 
     def test_feedback_delete(self):
         """Проверка удаления отзыва"""

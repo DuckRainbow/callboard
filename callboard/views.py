@@ -21,7 +21,6 @@ class AdCreateAPIView(CreateAPIView):
         """Привязка автора объявления к текущему пользователю"""
         ad = serializer.save()
         ad.author = self.request.user
-        print(ad.author)
         ad.save()
 
 
@@ -79,8 +78,8 @@ class UsersAdListAPIView(ListAPIView):
 
     def get_queryset(self):
         """Список объявлений автора"""
-        user = self.request.user
-        return super().get_queryset().filter(author=user)
+        author = self.request.user
+        return Ad.objects.filter(author=author)
 
 
 class FeedbackCreateAPIView(CreateAPIView):
@@ -104,7 +103,7 @@ class FeedbackListAPIView(ListAPIView):
     """Контроллер для просмотра всех отзывов объявления"""
 
     queryset = Feedback.objects.all()
-    serializer_class = AdDetailSerializer
+    serializer_class = FeedbackSerializer
     permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
 
@@ -115,7 +114,7 @@ class FeedbackListAPIView(ListAPIView):
             ad = Ad.objects.get(id=pk)
         except Ad.DoesNotExist:
             raise Http404("Указанного объявления не существует.")
-        feedbacks_list = ad.ad_feedback.all()
+        feedbacks_list = Feedback.objects.filter(ad=ad)
         return feedbacks_list
 
 
@@ -163,4 +162,4 @@ class UsersFeedbackListAPIView(ListAPIView):
     def get_queryset(self):
         """Метод для получения списка отзывов пользователя"""
         author = self.request.user
-        return super().get_queryset().filter(author=author)
+        return Feedback.objects.filter(author=author)
