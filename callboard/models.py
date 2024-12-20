@@ -75,6 +75,7 @@ class Feedback(models.Model):
         on_delete=models.SET_NULL,
     )
     created_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name='Дата создания объявления',
         blank=True,
         null=True,

@@ -114,7 +114,7 @@ class FeedbackListAPIView(ListAPIView):
             ad = Ad.objects.get(id=pk)
         except Ad.DoesNotExist:
             raise Http404("Указанного объявления не существует.")
-        feedbacks_list = ad.ad_feedback.all()
+        feedbacks_list = Feedback.objects.filter(ad=ad)
         return feedbacks_list
 
 
