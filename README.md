@@ -15,7 +15,7 @@
 
 1.Клонируйте проект
 
-        git clone git@github.com:DuckRainbow/diploma.git
+        git clone git@github.com:DuckRainbow/callboard.git
 
 
 2.Создайте виртуальное окружение
